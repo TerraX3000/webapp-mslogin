@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+{% if title %}
+<title>{{ webContent['layout']['app-browser-tab-title'] }} - {{ title }}</title>
+{% else %}
+<title>{{ webContent['layout']['app-browser-tab-title'] }}</title>
+{% endif %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-metro.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-flat.css">
+<link rel="stylesheet" href="{{ url_for('static', filename="main.css") }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Macro to display flashed messaged -->
+{% macro macro_display_flashed_messages() %}
+<div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    {% if category=='success' %}
+    <div class="w3-panel w3-padding-24 w3-display-container {{webContent['layout']['flash-success-color']}}">
+        <span onclick="this.parentElement.style.display='none'"
+            class="w3-button w3-display-left w3-margin-right w3-large">&times</span>
+        <b class="w3-display-middle w3-padding-large">{{ message }}</b>
+    </div>
+    {% elif category=='error' %}
+    <div class="w3-panel w3-padding-24 w3-display-container {{webContent['layout']['flash-error-color']}} ">
+        <span onclick="this.parentElement.style.display='none'"
+            class="w3-button w3-display-left w3-margin-right w3-large">&times</span>
+        <b class="w3-display-middle w3-padding-large">{{ message }}</b>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</div>
+{% endmacro %}
+
+<body class="w3-light-grey">
+
+    <!-- Top container -->
+    <div class="w3-top">
+        <div class="w3-bar {{webContent['layout']['top-bar-color']}} w3-large">
+            {% if 'user' in session %}
+            <a id="menuButton" class="w3-bar-item w3-button w3-hover-none w3-hover-text-light-grey"
+                onclick="w3_open();"><i class="fa fa-bars"></i>  Menu</a>
+            {% endif %}
+
+            <div class="w3-bar-item w3-right">{{ webContent['layout']['app-nav-bar-title'] }}</div>
+
+            {% if 'user' in session %}
+            <div class="w3-right w3-dropdown-hover">
+                <button class="w3-button"><i
+                        class="fa fa-user-circle fa-fw"></i>{{ session['user']['preferred_username'] }}</button>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <a href="{{ url_for('ms_login.userprofile') }}" class="w3-bar-item w3-button">User Profile</a>
+                    <a href="/logout" class="w3-bar-item w3-button">Logout</a>
+                </div>
+            </div>
+            {% elif request.path != '/login' %}
+            <div class="w3-right w3-dropdown-hover">
+                <a href="/login" class="w3-bar-item w3-button">Log In</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Sidebar/menu -->
+    <nav class="w3-sidebar w3-white w3-animate-left" style="display:none;z-index:3;width:300px;" id="mySidebar">
+        <br>
+        <div class="w3-bar-block">
+            <a href="/" class="w3-bar-item w3-button w3-padding"><i class="fa fa-home fa-fw"></i> 
+                Home</a>
+            <a href="/admin" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Admin</a>
+            <a href="/about" class="w3-bar-item w3-button w3-padding"><i class="fa fa-info-circle  fa-fw"></i> 
+                About</a>
+
+        </div>
+    </nav>
+
+
+    <!-- Overlay effect when opening sidebar on small screens -->
+    <div class="w3-overlay w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu"
+        id="myOverlay"></div>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:0px;margin-top:43px;">
+
+        <div class="w3-container {{webContent['layout']['title-bar-color']}} w3-row">
+            <div class="w3-threequarter">
+                <h2>{{title}}</h2>
+            </div>
+        </div>
+
+        <div class="w3-col {{webContent['layout']['background-color']}}">
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- Footer -->
+        <div class="w3-container"></div>
+        <footer class="w3-container w3-padding-32 {{webContent['layout']['background-color']}}">
+
+        </footer>
+
+        <!-- End page content -->
+    </div>
+
+    <script>
+        // Get the Sidebar
+        var mySidebar = document.getElementById("mySidebar");
+
+        // Get the DIV with overlay effect
+        var overlayBg = document.getElementById("myOverlay");
+
+        // Toggle between showing and hiding the sidebar, and add overlay effect
+        function w3_open() {
+            if (mySidebar.style.display === 'block') {
+                mySidebar.style.display = 'none';
+                overlayBg.style.display = "none";
+            } else {
+                mySidebar.style.display = 'block';
+                overlayBg.style.display = "block";
+            }
+        }
+        // Close the sidebar with the close button
+        function w3_close() {
+            console.log('w3_close called');
+            mySidebar.style.display = "none";
+            overlayBg.style.display = "none";
+        }
+
+    </script>
+
+</body>
+
+</html>

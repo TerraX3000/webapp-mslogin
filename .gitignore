@@ -1,0 +1,8 @@
+.vscode
+*.pyc
+*.code-workspace
+webapp-venv
+*.db
+*.env
+flask_session
+main_app/.DS_Store

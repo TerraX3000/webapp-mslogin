@@ -1,0 +1,19 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{{ macro_display_flashed_messages() }}
+
+<div class="w3-col {{webContent['layout']['background-color']}}">
+    <div class="w3-container w3-center">
+        <div class="w3-panel"></div>
+
+        <a class="w3-button {{webContent['layout']['submit-button-color']}}" href='{{ auth_url }}'>Sign In</a>
+
+        {% if config.get("B2C_RESET_PASSWORD_AUTHORITY") %}
+        <h2><a href='{{_build_auth_url(authority=config["B2C_RESET_PASSWORD_AUTHORITY"])}}'>Reset Password</a>
+        </h2>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock content %}

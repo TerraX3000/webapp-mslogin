@@ -1,0 +1,13 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{{ macro_display_flashed_messages() }}
+
+<div class="w3-container">
+    <a class="w3-margin w3-button {{webContent['layout']['submit-button-color']}}"
+        href="javascript:window.history.go(-1)">Back</a>
+    <!-- Displayed on top of a potentially large JSON response, so it will remain visible -->
+    <pre>{{ result |tojson(indent=4) }}</pre> <!-- Just a generic json viewer -->
+
+</div>
+{% endblock content %}

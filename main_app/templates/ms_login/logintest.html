@@ -1,0 +1,16 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{{ macro_display_flashed_messages() }}
+
+<div class="w3-container">
+    <h1>Test Account Usage</h1>
+
+    <p>The test account provides an alternate way to test app features without using
+        the authenticated sign-in process. </p>
+    <p> Remove the test account before deploying the app for
+        use in production environments.
+    </p>
+</div>
+
+{% endblock content %}

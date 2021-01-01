@@ -1,0 +1,18 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{{ macro_display_flashed_messages() }}
+
+<div class="w3-container w3-center {{webContent['layout']['top-panel-color']}} w3-display-container">
+    <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
+    <h3>Use Google Chrome for best results</h3>
+</div>
+<div class="w3-container w3-center">
+    <h2>Test Page</h2>
+    <p>Blueprint: {{ request.blueprint }}</p>
+    <p>Template: {{ self._TemplateReference__context.name }}</p>
+    <p>View: {{ request.endpoint }}</p>
+    <p>Route: {{ request.path }}</p>
+</div>
+
+{% endblock content %}

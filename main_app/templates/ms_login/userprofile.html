@@ -1,0 +1,104 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+<div class="w3-panel"></div>
+
+{{ macro_display_flashed_messages() }}
+
+<div class="w3-container w3-center">
+    {% if user %}
+
+    <div class="w3-container w3-center">
+        <div class="w3-row">
+            <div class="w3-container w3-quarter"> &nbsp;</div>
+            <div class="w3-container w3-quarter {{webContent['layout']['table-header-row-color']}}">
+                <p>First Name</p>
+            </div>
+
+            <div class="w3-container w3-quarter {{webContent['layout']['table-row-color']}}">
+                <p>{{ user.firstName }}</p>
+            </div>
+        </div>
+
+        <div class="w3-row">
+            <div class="w3-container w3-quarter"> &nbsp;</div>
+            <div class="w3-container w3-quarter {{webContent['layout']['table-header-row-color']}}">
+                <p>Last Name</p>
+            </div>
+
+            <div class="w3-container w3-quarter {{webContent['layout']['table-row-color']}}">
+                <p>{{ user.lastName }}</p>
+            </div>
+        </div>
+
+        <div class="w3-row">
+            <div class="w3-container w3-quarter"> &nbsp;</div>
+            <div class="w3-container w3-quarter {{webContent['layout']['table-header-row-color']}}">
+                <p>Email</p>
+            </div>
+
+            <div class="w3-container w3-quarter {{webContent['layout']['table-row-color']}}">
+                <p>{{ user.email }}</p>
+            </div>
+        </div>
+
+        <div class="w3-row">
+            <div class="w3-container w3-quarter"> &nbsp;</div>
+            <div class="w3-container w3-quarter {{webContent['layout']['table-header-row-color']}}">
+                <p>Position</p>
+            </div>
+
+            <div class="w3-container w3-quarter {{webContent['layout']['table-row-color']}}">
+                <p>{{ user.position }}</p>
+            </div>
+        </div>
+
+        <div class="w3-row">
+            <div class="w3-container w3-quarter"> &nbsp;</div>
+            <div class="w3-container w3-quarter {{webContent['layout']['table-header-row-color']}}">
+                <p>Access</p>
+            </div>
+
+            <div class="w3-container w3-quarter {{webContent['layout']['table-row-color']}}">
+                <p>{{ userRoles }}</p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class='w3-panel'></div>
+
+    <a class="w3-button {{webContent['layout']['submit-button-color']}}" href="/logout">Logout</a>
+    {% if config.get("ENDPOINT") %}
+    <a class="w3-button {{webContent['layout']['submit-button-color']}}" href="/graphcall">Call Microsoft Graph API</a>
+    {% endif %}
+
+    {% if config.get("B2C_PROFILE_AUTHORITY") %}
+    <a class="w3-button {{webContent['layout']['submit-button-color']}}"
+        href="{{_build_auth_url(authority=config["B2C_PROFILE_AUTHORITY"])}}">Edit Profile</a>
+    {% endif %}
+
+</div>
+
+{% else %}
+<h2 class="w3-center">You did not successfully login. These solutions might help.</h2>
+<table class="w3-table-all">
+    <tr>
+        <th>Possible Reason</th>
+        <th>Solution</th>
+    </tr>
+    <tr>
+        <td>You are not listed in the user list</td>
+        <td>Go to Menu <i class='fa fa-arrow-right'></i> App Admin <i class='fa fa-arrow-right'></i> User Info
+            <i class='fa fa-arrow-right'></i> Add New User and
+            add yourself</td>
+    </tr>
+    <tr>
+        <td>You logged in with a different account</td>
+        <td>Use the email account associated with your account to log in</td>
+    </tr>
+</table>
+{% endif %}
+</div>
+{% endblock content %}

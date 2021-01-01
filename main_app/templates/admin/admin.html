@@ -1,0 +1,224 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{% macro macro_display_formfield(formfield, w3InputClass, w3ResponsiveGridClass, id=formfield.id) %}
+<div class="{{w3ResponsiveGridClass}}">
+    {{ formfield.label(class="w3-text-green w3-large") }}
+    {% if formfield.errors %}
+    {{ formfield(class="w3-select is-invalid") }}
+    <div class="invalid-feedback">
+        {% for error in formfield.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    {% if w3InputClass == "w3-input" %}
+    {{ formfield(class="w3-input w3-section", id=id) }}
+    {% elif w3InputClass == "w3-select" %}
+    {{ formfield(class="w3-select w3-section", id=id) }}
+    {% elif w3InputClass == "w3-radio" %}
+    {{ formfield(class="w3-radio w3-section", id=id) }}
+    {% else %}
+    {{ formfield(class="w3-select w3-section", id=id) }}
+    {% endif %}
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro macro_display_checkbox(formfield, w3ResponsiveGridClass) %}
+<div class="{{w3ResponsiveGridClass}}">
+    {{ formfield.label(class="w3-text-green w3-large") }}
+    {% if formfield.errors %}
+    {{ formfield(class="w3-select is-invalid") }}
+    <div class="invalid-feedback">
+        {% for error in formfield.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    {{ formfield(class="w3-check  w3-section") }}
+    {% endif %}
+</div>
+{% endmacro %}
+
+<div class="w3-bar {{webContent['layout']['tab-bar-color']}}">
+    <button id='button_UserInfoTab' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'UserInfoTab','Admin')">User Info</button>
+    <button id='button_SetupTab' class="w3-bar-item w3-button tablink" onclick="openTab(event, 'SetupTab','Admin')">App
+        Setup</button>
+</div>
+
+{{ macro_display_flashed_messages() }}
+
+<div class="infoTab" id="UserInfoTab">
+
+    <div class="w3-container w3-padding-large w3-margin-right w3-margin-left w3-section">
+        <table class="w3-padding-large w3-table w3-bordered w3-striped w3-hoverable">
+            <thead>
+                <tr class="{{webContent['layout']['table-header-row-color']}}">
+                    <th>First</th>
+                    <th>Last</th>
+                    <th>Position</th>
+                    <th>Email</th>
+                    <th>Access</th>
+
+                </tr>
+            </thead>
+            <tbody class="w3-main">
+                {% for user, userRole in zip(userInfo, userRoleInfo) %}
+                <tr>
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>{{ user.position }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ userRole }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="w3-container w3-section">
+        <form class="w3-container w3-padding-large" method="POST" action="{{ url_for('admin.displayAdmin') }}"
+            enctype="multipart/form-data">
+            {{ addUserForm.hidden_tag() }}
+            <fieldset class="w3-container w3-padding-large {{webContent['layout']['fieldset-hover-border-color']}}">
+                <legend class="w3-xlarge">Add User</legend>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(addUserForm.firstName, "w3-input", "w3-half") }}
+                    {{ macro_display_formfield(addUserForm.lastName, "w3-input", "w3-half") }}
+                    {{ macro_display_formfield(addUserForm.position, "w3-input", "w3-half") }}
+                    {{ macro_display_formfield(addUserForm.email, "w3-input", "w3-half") }}
+                </div>
+                <!-- User access selection -->
+                <div class="w3-padding-small">
+                    <div>
+                        {{ addUserForm.role.label(class="w3-text-green w3-large") }}
+                    </div>
+                    {% if addUserForm.role.errors %}
+                    {{ addUserForm.role(class="w3-check is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in addUserForm.role.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="w3-show-inline-block">
+                        {% for choice in addUserForm.role %}
+                        {{ choice(class="w3-radio") }}
+                        {{ choice.label(class="w3-text-black w3-margin-right") }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="w3-row w3-margin-top w3-padding-large">
+                    {{ addUserForm.submitAddUser(class="w3-btn w3-metro-darken
+                    w3-large") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="w3-container">
+        <form class="w3-container w3-padding-large" method="POST" action="{{ url_for('admin.displayAdmin') }}"
+            enctype="multipart/form-data">
+            {{ selectUserToEditForm.hidden_tag() }}
+            <fieldset class="w3-container w3-padding-large {{webContent['layout']['fieldset-hover-border-color']}}">
+                <legend class="w3-xlarge">Edit User</legend>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(selectUserToEditForm.userName, "w3-select", "w3-half",id="editUser") }}
+                </div>
+                <div class="w3-row w3-padding-large">
+                    {{ selectUserToEditForm.submitUserToEdit(class="w3-btn w3-metro-darken
+                    w3-large") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="w3-container">
+        <form class="w3-container w3-padding-large" method="POST" action="{{ url_for('admin.displayAdmin') }}"
+            enctype="multipart/form-data">
+            {{ downloadUserListForm.hidden_tag() }}
+            <fieldset class="w3-container w3-padding-large {{webContent['layout']['fieldset-hover-border-color']}}">
+                <legend class="w3-xlarge">Download User List</legend>
+                <div class="w3-row w3-padding-large">
+                    {{ downloadUserListForm.submitDownloadUserListForm(class="w3-btn w3-metro-darken
+                    w3-large") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="w3-container">
+        <form class="w3-container w3-padding-large" method="POST" action="{{ url_for('admin.displayAdmin') }}"
+            enctype="multipart/form-data">
+            {{ uploadUserListForm.hidden_tag() }}
+            <fieldset class="w3-container w3-padding-large {{webContent['layout']['fieldset-hover-border-color']}}">
+                <legend class="w3-xlarge">Upload User List</legend>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(uploadUserListForm.csvUserListFile, "w3-input", "w3-half") }}
+                </div>
+                <div class="w3-row w3-padding-large">
+                    {{ uploadUserListForm.submitUploadUserList(class="w3-btn w3-metro-darken
+                    w3-large") }}
+                </div>
+                <div class="w3-row w3-padding-large">
+                    <a href="/templates/user_list_template" target="blank"><i class="fa fa-download fa-fw"></i>
+                        Download Template
+                    </a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="w3-container">
+        <form class="w3-container w3-padding-large" method="POST" action="{{ url_for('admin.displayAdmin') }}"
+            enctype="multipart/form-data">
+            {{ deleteUserForm.hidden_tag() }}
+            <fieldset class="w3-container w3-padding-large w3-hover-border-red">
+                <legend class="w3-xlarge">Delete User from Database</legend>
+                <p> This action will permamently delete the user from the database.</p>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(deleteUserForm.userName, "w3-select", "w3-half", id="deleteUser") }}
+                    {{ macro_display_formfield(deleteUserForm.confirmDeleteUser, "w3-input", "w3-half") }}
+                </div>
+                <div class="w3-row w3-padding-large">
+                    {{ deleteUserForm.submitDeleteUser(class="w3-btn w3-flat-pomegranate
+                    w3-large") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="infoTab" id="SetupTab" style="display:none">
+    <div class="w3-container w3-padding-large w3-margin-right w3-margin-left w3-section">
+        <fieldset class="w3-container w3-padding-large {{webContent['layout']['fieldset-hover-border-color']}}">
+            <h3>Set System Mode</h3>
+            {% if SystemMode %}
+            <p class="w3-container w3-center w3-padding-large w3-large w3-green">Current System Mode = Ops</p>
+            {% elif not SystemMode %}
+            <p class="w3-container w3-center w3-padding-large w3-large w3-red">Current System Mode = Test</p>
+            {% endif %}
+            <form action="{{ url_for('admin.setSystemMode') }}" method="POST">
+                <input class="w3-button {{webContent['layout']['submit-button-color']}} w3-large" name="submit_button"
+                    type="submit" value="Set to Test Mode">
+                <input class="w3-button {{webContent['layout']['submit-button-color']}} w3-large" name="submit_button"
+                    type="submit" value="Set to Ops Mode">
+            </form>
+        </fieldset>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="{{ url_for('static', filename="js/appSettings.js") }}"></script>
+<!-- Reload page to last loaded tab -->
+<script type='text/javascript'>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        const pageName = 'Admin';
+        const default_tab = 'UserInfoTab';
+        loadSavedTabOrDefaultTab(pageName, default_tab)
+    });
+</script>
+{% endblock content %}

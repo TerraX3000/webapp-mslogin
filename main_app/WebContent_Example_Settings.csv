@@ -1,0 +1,20 @@
+1,layout,top-bar-color,w3-black
+2,layout,title-bar-color,w3-khaki
+3,layout,top-panel-color,w3-light-gray
+4,layout,background-color,w3-white
+5,layout,form-text-color,w3-text-white
+6,layout,fieldset-hover-border-color,w3-hover-border-black
+7,layout,tab-bar-color,w3-metro-darken
+10,layout,submit-button-color,w3-metro-darken
+11,layout,table-header-row-color,w3-light-grey
+12,layout,table-row-color,w3-white
+13,layout,table-row-hover-color,w3-hover-black
+14,layout,flash-success-color,w3-metro-light-green
+15,layout,flash-error-color,w3-metro-dark-orange
+16,layout,card-header-color,w3-metro-darken
+17,layout,card-footer-color,w3-flat-pomegranate
+18,layout,info-panel-color,w3-metro-darken
+19,layout,app-nav-bar-title,Demo App
+20,layout,app-browser-tab-title,Demo App
+21,layout,dash-app-background-color,w3-light-gray
+23,layout,submit-button-warning-color,w3-flat-pomegranate
