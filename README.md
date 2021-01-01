@@ -2,7 +2,7 @@
 
 WebApp-msLogin is a Flask-based app template using Microsoft identity platform to manage user authentication.
 
-![WebApp-msLogin Admin Preview](https://i.ibb.co/GVt3Bjr/Admin-User-Info-Page.png "WebApp-msLogin Admin Preview")
+![WebApp-msLogin Admin Preview](https://i.ibb.co/3Tj6826/Admin-User-Info-Page.png "WebApp-msLogin Admin Preview")
 
 ### Microsoft Sign In
 Use of Microsoft's sign-in service requires an Azure subscription.  The app follows the steps outlined in the [Quickstart: Add sign-in with Microsoft to a Python web app](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-python-webapp) tutorial.
@@ -31,7 +31,7 @@ The app implements a database table named WebContent to customize app appearance
 ### System Mode
 The app implements a database table named adminSettings to manage system settings.  For example, the Admin page includes an option to switch the system mode between ops mode and test mode.  The app can be customized to use the system mode status to enable or disable different operations.
 
-![WebApp-msLogin System Mode Preview](https://i.ibb.co/1stXNRG/Admin-App-Setup-Page.png "WebApp-msLogin System Mode Preview")
+![WebApp-msLogin System Mode Preview](https://i.ibb.co/Fqm8fmm/Admin-App-Setup-Page.png "WebApp-msLogin System Mode Preview")
 
 ## Installation and Configuration
 The following instructions provide the general steps to install and configure the app.  This app runs on http://localhost:5000 and uses SQLite as a development database.  The app will initialize the database with a test account, access roles, and default WebContent values.
