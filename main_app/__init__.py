@@ -115,11 +115,10 @@ def initializeWebContent(WebContent):
     return
 
 
-@wrap(entering, exiting)
 def getWebContent(WebContent):
     """This function creates a dictionary for webContent data stored in the database.
     WebContent is accessed by calling this dictionary structure:
-    {{ webContent[pageName][contentName] }}
+    {{ webContent[sectionName][contentName] }}
     WebContent contains data stored in the SQL database which can be
     used to store information to customize app content.
     WebContent is accessible by all templates by referencing
