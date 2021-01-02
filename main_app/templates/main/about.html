@@ -3,8 +3,17 @@
 
 {{ macro_display_flashed_messages() }}
 
-<div class="w3-container w3-center">
-    <h2></h2>
+<!-- Style code blocks -->
+<style>
+    pre {
+        background-color: lightgrey;
+        color: black;
+        padding: 10px 25px 10px 25px;
+    }
+</style>
+
+<div class="w3-container">
+    {{ read_me_html }}
 </div>
 
 {% endblock content %}

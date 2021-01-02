@@ -8,12 +8,13 @@ WebApp-msLogin is a Flask-based app template using Microsoft identity platform t
 Use of Microsoft's sign-in service requires an Azure subscription.  The app follows the steps outlined in the [Quickstart: Add sign-in with Microsoft to a Python web app](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-python-webapp) tutorial.
 
 ### Flask Extensions
-This project uses several Flask extensions including: 
-- [msal](https://msal-python.readthedocs.io/en/latest/) for Microsoft authentication
-- [Blueprints](http://flask.pocoo.org/docs/0.12/blueprints/) for scalability
-- [flask_login](https://flask-login.readthedocs.io/en/latest/) for user access management
-- [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/) for database interactions
-- [flask_migrate](https://flask-migrate.readthedocs.io/en/latest/) for database migration
+This project uses several Flask extensions including:
+
+* [msal](https://msal-python.readthedocs.io/en/latest/) for Microsoft authentication
+* [Blueprints](http://flask.pocoo.org/docs/0.12/blueprints/) for scalability
+* [flask_login](https://flask-login.readthedocs.io/en/latest/) for user access management
+* [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/) for database interactions
+* [flask_migrate](https://flask-migrate.readthedocs.io/en/latest/) for database migration
 
 ### User Access
 The app supports access roles to manage and control access.  Access roles are defined in the table Roles.  Access is assigned through the Admin page.  Endpoints can be restricted by including a decorator such as
