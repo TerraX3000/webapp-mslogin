@@ -76,9 +76,4 @@ def getSystemModeStatus():
         .order_by(adminSettings.id.desc())
         .first()
     )
-    # Set system mode to test on first use
-    if systemModeStatus == None:
-        setSystemModeStatus(False)
-        db.session.commit()
-        return getSystemModeStatus()
     return systemModeStatus[0]
