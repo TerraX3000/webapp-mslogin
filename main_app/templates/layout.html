@@ -73,7 +73,11 @@
         <div class="w3-bar-block">
             <a href="/" class="w3-bar-item w3-button w3-padding"><i class="fa fa-home fa-fw"></i> 
                 Home</a>
+            {% if 'user' in session %}
+            {% if 'Admin' in session['user']['roles'] %}
             <a href="/admin" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Admin</a>
+            {% endif %}
+            {% endif %}
             <a href="/about" class="w3-bar-item w3-button w3-padding"><i class="fa fa-info-circle  fa-fw"></i> 
                 About</a>
 
