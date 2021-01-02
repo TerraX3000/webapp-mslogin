@@ -10,6 +10,7 @@ from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from flask_misaka import Misaka
 
 # import pytz
 
@@ -73,6 +74,8 @@ login_manager = LoginManager()
 # Instantiate oauth for managing Google authentication
 # oauth = OAuth()
 
+# Instantiate the Flask Misaka markdown extension
+md = Misaka()
 
 # This function is used in jinja2 templates to display UTC datetime strings in local time
 # def datetimefilter(value, format="%a %b %-d @ %-I:%M %p"):
@@ -196,6 +199,10 @@ def create_app(config_class):
     db.init_app(app)
     # Initialize Migrate with the app and the database
     migrate.init_app(app, db)
+
+    # Initialize Flask-Markdown extension
+    md.init_app(app)
+
     # Create all database tables
     from main_app.models import Users, UserRoles, Role, WebContent, adminSettings
 
