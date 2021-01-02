@@ -94,6 +94,7 @@ def logout():
 @bp.route("/graphcall")
 @login_required
 def graphcall():
+    """Display results from Microsoft Graph API"""
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("ms_login.login"))
@@ -152,7 +153,7 @@ def _get_token_from_cache(scope=None):
 
 
 def loginApprovedUser(id_token_claims):
-    # Verify user is approved to access the apps
+    """Verify user is approved to access the apps"""
     if "preferred_username" in id_token_claims:
         users_email = id_token_claims["preferred_username"]
         print("users_email=", users_email)

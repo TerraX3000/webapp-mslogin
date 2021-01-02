@@ -33,10 +33,13 @@ def addUserToDatabase(firstName, lastName, position, email):
     return user
 
 
+@wrap(entering, exiting)
 def addUserRoleToDatabase(user, role):
+    """Adds new role for user"""
     user_roles = UserRoles(user_id=user.id, role_id=int(role))
     db.session.add(user_roles)
     db.session.commit()
+    return
 
 
 @wrap(entering, exiting)

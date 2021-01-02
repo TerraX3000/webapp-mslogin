@@ -3,7 +3,7 @@ from main_app.models import Users, UserRoles, Role, adminSettings
 
 
 def getUsers():
-    # Get list of user to display as dropdown choices but exclude system account
+    """Get list of user to display as dropdown choices but exclude system account"""
     userTupleList = (
         db.session.query(Users.id, Users.firstName, Users.lastName)
         .filter(Users.lastName != "System")
@@ -18,6 +18,7 @@ def getUsers():
 
 
 def findUserByEmail(user_email):
+    """Return the user associated with this email"""
     user = db.session.query(Users).filter(Users.email == user_email).first()
     return user
 
@@ -48,12 +49,13 @@ def getStringListOfUserRoles(user):
 
 
 def getRoleChoices():
-    # Get list of roles to display as dropdown choices
+    """Get list of roles to display as dropdown choices"""
     roleTupleList = db.session.query(Role.id, Role.name).order_by(Role.id).all()
     return roleTupleList
 
 
 def getSystemAccountEmail():
+    """Get email address for the system account"""
     systemAccountEmail = (
         db.session.query(Users.email).filter(Users.lastName == "System").first()
     )
@@ -61,13 +63,14 @@ def getSystemAccountEmail():
 
 
 def setSystemModeStatus(systemModeStatus):
-    # Set system mode status to enableLiveMode=True or enableLiveMode=False
+    """ Set system mode status to enableLiveMode=True or enableLiveMode=False"""
     newAdminSettings = adminSettings(enableOpsMode=systemModeStatus)
     db.session.add(newAdminSettings)
     return
 
 
 def getSystemModeStatus():
+    """Get current system mode"""
     systemModeStatus = (
         db.session.query(adminSettings.enableOpsMode)
         .order_by(adminSettings.id.desc())
