@@ -1,6 +1,6 @@
 import logging
 
-output = "/tmp"
+output = "."
 
 logger = logging.getLogger("Program Name-Version")
 logger.setLevel(logging.DEBUG)
@@ -11,7 +11,7 @@ consoleHeader = logging.StreamHandler()
 consoleHeader.setFormatter(formatter)
 consoleHeader.setLevel(logging.INFO)
 
-fileHandler = logging.FileHandler(f"{output}/metabcc-lr.log")
+fileHandler = logging.FileHandler(f"{output}/output.log")
 fileHandler.setLevel(logging.DEBUG)
 fileHandler.setFormatter(formatter)
 

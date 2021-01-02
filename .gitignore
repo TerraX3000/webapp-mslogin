@@ -4,5 +4,6 @@
 webapp-venv
 *.db
 *.env
+*.log
 flask_session
 main_app/.DS_Store
