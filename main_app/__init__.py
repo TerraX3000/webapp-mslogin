@@ -2,6 +2,8 @@ from flask import Flask, url_for
 from flask_session import Session
 from importlib import import_module
 import msal
+import csv
+
 from .config_msa import Config as app_config
 
 from flask_sqlalchemy import SQLAlchemy
@@ -22,7 +24,7 @@ from .log import logger, wrap, entering, exiting
 
 
 def register_blueprints(app):
-    for module_name in ["main", "ms_login", "errors", "admin"]:
+    for module_name in ["main", "ms_login", "errors", "admin", "templateManager"]:
         module = import_module(f"main_app.{module_name}.routes")
         # module_bp = module_name + "_bp"
         # blueprint = getattr(module, module_bp)
@@ -93,6 +95,37 @@ def initializeSystemModeStatus(adminSettings):
         db.session.add(newAdminSettings)
         db.session.commit()
         logger.info("Initialized System Mode to 'Test'")
+    return
+
+
+def column_wrapper(reader):
+    """Parse CSV file with column with multiple lines"""
+    for row, name, place, thing in reader:
+        for split_thing in thing.strip().split("\\n"):
+            if split_thing:
+                yield row, name, place, split_thing
+
+
+@wrap(entering, exiting)
+def initializeTemplateManager(Templates):
+    """ Initialize templates for first-time use """
+    if not Templates.query.first():
+        with open("main_app/SampleTemplate.csv", "r") as csvfile:
+            reader = csv.reader(csvfile)
+            data = [
+                [row, data, name, thing]
+                for row, data, name, thing in column_wrapper(reader)
+            ]
+            print(data)
+            template = Templates(
+                templateTitle=data[0][1],
+                emailSubject=data[0][2],
+                templateContent=data[0][3],
+            )
+            db.session.add(template)
+            db.session.commit()
+            # print(template)
+        # logger.info("Added WebContent")
     return
 
 
@@ -204,7 +237,14 @@ def create_app(config_class):
     md.init_app(app)
 
     # Create all database tables
-    from main_app.models import Users, UserRoles, Role, WebContent, adminSettings
+    from main_app.models import (
+        Users,
+        UserRoles,
+        Role,
+        WebContent,
+        adminSettings,
+        Templates,
+    )
 
     with app.app_context():
         db.create_all()
@@ -214,6 +254,7 @@ def create_app(config_class):
 
     with app.app_context():
         initializeSystemModeStatus(adminSettings)
+        initializeTemplateManager(Templates)
         initializeWebContent(WebContent)
 
     @app.context_processor

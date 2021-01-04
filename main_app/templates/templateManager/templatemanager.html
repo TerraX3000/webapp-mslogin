@@ -1,0 +1,349 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{% macro macro_display_formfield(formfield, w3ResponsiveGridClass) %}
+<div class="{{w3ResponsiveGridClass}}">
+    {{ formfield.label(class="w3-text-green w3-large") }}
+    {% if formfield.errors %}
+    {{ formfield(class="w3-select is-invalid") }}
+    <div class="invalid-feedback">
+        {% for error in formfield.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    {{ formfield(class="w3-select w3-section", id=False) }}
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro macro_display_checkbox(formfield, w3ResponsiveGridClass) %}
+<div class="{{w3ResponsiveGridClass}}">
+    {{ formfield.label(class="w3-text-green w3-large") }}
+    {% if formfield.errors %}
+    {{ formfield(class="w3-select is-invalid") }}
+    <div class="invalid-feedback">
+        {% for error in formfield.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    {{ formfield(class="w3-check  w3-section") }}
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro macro_colorCode_tdField(formfield) %}
+{% if not formfield %}
+<td class="w3-center w3-pale-red">{{ formfield }}</td>
+{% else %}
+<td class="w3-center w3-pale-green">{{ formfield }}</td>
+{% endif %}
+{% endmacro %}
+
+<div class="w3-bar {{ webContent['layout']['tab-bar-color'] }}">
+    <button id='button_editTemplate' class="w3-bar-item w3-button tablink w3-black"
+        onclick="openTab(event, 'editTemplate', 'TemplateManager')">Edit Template</button>
+    <button id='button_newTemplate' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'newTemplate', 'TemplateManager')">New Template</button>
+    <button id='button_Instructions' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'Instructions', 'TemplateManager')">Instructions</button>
+    <button id='button_testTemplate' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'testTemplate', 'TemplateManager')">Template Testing</button>
+</div>
+
+{{ macro_display_flashed_messages() }}
+
+<div class="infoTab" id="editTemplate">
+    <div class="w3-container w3-padding-large w3-margin-right w3-margin-left w3-section">
+        <table class="w3-padding-large w3-table w3-bordered w3-striped">
+            <thead>
+                <tr class="{{ webContent['layout']['table-header-row-color'] }}">
+                    <th>Template Title</th>
+                </tr>
+            </thead>
+            <tbody class="w3-main">
+                {% for template in templates %}
+                <tr class="w3-hover-grey">
+                    <td>{{ template.templateTitle }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <form class="w3-container w3-padding-large" method="POST" action="{{ url_for('templateManager.displayTemplates') }}"
+        enctype="multipart/form-data">
+        {{ chooseTemplateToEdit.csrf_token(id = False) }}
+        <div class="w3-row-padding">
+            {{ macro_display_formfield(chooseTemplateToEdit.templateTitle, "w3-half") }}
+        </div>
+        <div class="w3-row w3-padding-large">
+            {{ chooseTemplateToEdit.chooseTemplateToEdit(class="w3-btn w3-metro-darken w3-large") }}
+        </div>
+    </form>
+
+    {% if editTemplateForm %}
+    <div class="w3-container">
+        <form class="w3-container w3-padding-large" method="POST"
+            action="{{ url_for('templateManager.displayTemplates') }}" enctype="multipart/form-data">
+            {{ editTemplateForm.hidden_tag() }}
+            <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+                <legend class="w3-xlarge"> Edit Template </legend>
+                <!-- Title, Intervention Type, Intervention Level -->
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(editTemplateForm.templateTitle, "w3-half") }}
+                </div>
+                <!-- Email Subject -->
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(editTemplateForm.emailSubject, "w3-half") }}
+                    {% if rendered_emailSubject %}
+                    <div class="w3-half">
+                        <label class="w3-text-green w3-large">Example of Rendered Email Subject:</label>
+                        <p class="w3-padding-small w3-white">{{rendered_emailSubject}}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- Template Content -->
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(editTemplateForm.templateContent, "w3-half") }}
+                    {% if rendered_templateContent %}
+                    <div class="w3-half">
+                        <label class="w3-text-green w3-large">Example of Rendered Content:</label>
+                        <p class="w3-padding-small w3-white">{{rendered_templateContent}}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Submit or Delete -->
+                <div class="w3-row w3-padding-large">
+                    <a class="w3-btn w3-grey w3-large" href="{{url_for('templateManager.displayTemplates')}}">Cancel</a>
+                    {{ editTemplateForm.submitUpdatedTemplate(class="w3-btn w3-metro-darken w3-large") }}
+                    <button type="button" class="w3-btn w3-red w3-large"
+                        onclick="document.getElementById('deleteModal').style.display='block'">Delete Template</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="w3-modal" id="deleteModal">
+        <div class="w3-container">
+            <div class="w3-modal-content" style="width:50%">
+                <header class="w3-container w3-red">
+                    <span onclick="document.getElementById('deleteModal').style.display='none'"
+                        class="w3-button w3-display-topright">&times;</span>
+                    <h2>Delete Template?</h2>
+                </header>
+                <footer class="w3-container w3-margin-top w3-white w3-center">
+                    <div class="w3-bar">
+                        <form
+                            action="{{ url_for('templateManager.delete_Template', log_id=editTemplateForm.template_id.data|int) }}"
+                            method="POST">
+                            <button type="button" class="w3-button w3-large"
+                                onclick="document.getElementById('deleteModal}').style.display='none'">Cancel</button>
+                            <input class="w3-button w3-red w3-large" type="submit" value="Delete">
+                        </form>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="infoTab" id="newTemplate" style="display:none">
+    <form class="w3-container w3-padding-large" method="POST" action="{{ url_for('templateManager.displayTemplates') }}"
+        enctype="multipart/form-data">
+        {{ templateForm.csrf_token(id = False) }}
+        <div class="w3-container">
+            <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+                <legend class="w3-xlarge"> New Template </legend>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(templateForm.templateTitle, "w3-half") }}
+                    {{ macro_display_formfield(templateForm.emailSubject, "w3-threequarter") }}
+                    {{ macro_display_formfield(templateForm.templateContent, "w3-threequarter") }}
+                </div>
+                <div class="w3-row w3-padding-large">
+                    {{ templateForm.submitNewTemplate(class="w3-btn w3-metro-darken w3-large") }}
+                </div>
+            </fieldset>
+        </div>
+    </form>
+</div>
+
+<div class="infoTab" id="Instructions" style="display:none">
+    <div class="w3-panel"></div>
+    <div class="w3-container w3-panel w3-margin">
+        {% raw %}
+        <h1>Template Attributes and Naming Conventions</h1>
+        <p> Email templates are selected based on various criteria such template title.</p>
+        <br>
+        <h1>Template Variables</h1>
+        <p> Templates use template variables which are enclosed in double curly braces {{}}. The list below includes
+            template variables for testing.</p>
+        <div class="w3-row">
+            <div class="w3-third">
+                <p> {{ firstName }} </p>
+                <p> {{ lastName }} </p>
+                <p> {{ orgName }} </p>
+                <p> {{ startDate }} </p>
+                <p> {{ endDate }} </p>
+                <p> {{ startTime }} </p>
+                <p> {{ endTime }}</p>
+                <p> {{ eventNumber }} </p>
+                <p> {{ webLink }} </p>
+                <p> {{ comment }} </p>
+                <p> {{ simpleList }} </p>
+            </div>
+            <div class="w3-rest">
+                <p> {{ eventList }} = list of entries for nested list testing. Each entry contains data
+                    for the
+                    following items: </p>
+                <p> {{ eventName }} </p>
+                <p> {{ eventDate }} </p>
+                <p> {{ startTime }} </p>
+                <p> {{ endTime }}</p>
+            </div>
+        </div>
+
+        <br>
+        <h1>Markdown Formatting</h1>
+        <p> The templates support Markdown formatting. Markdown is a text-to-HTML conversion tool for web writers.
+            Markdown allows you to write using an easy-to-read, easy-to-write plain text format, then convert it to
+            structurally valid HTML.
+        <p>See this reference for more information on the Markdown syntax:
+            <a href="https://www.markdownguide.org/basic-syntax/">https://www.markdownguide.org/basic-syntax/</a>
+        </p>
+        <p> Templates may use Markdown formatting such as applying a bold text style or adding hyperlinks.</p>
+        <p> Examples:</p>
+        <p> **This text will be bold**</p>
+        <p> Please see [Google]({{webLink}} "Link to Google") for testing.
+        </p>
+        <br>
+
+        <h1>HTML Formatting</h1>
+        <p> The templates support HTML formatting. In order for line breaks to appear, it is neccesary to
+            use
+            HTML tags for paragraphs or line breaks.</p>
+        <p>Examples:</p>
+        <p> &lt;p&gt; This examples uses paragraphs tags (note the closing tag preceded with a forward slash) &lt;/p&gt;
+        </p>
+        <p> This example uses a line break (note it is a self-closing tag so only one tag is needed) &lt;br&gt;</p>
+        <br>
+        <p> Templates may use HTML formatting such as applying a bold text style or adding hyperlinks.</p>
+        <p> Examples:</p>
+        <p> &lt;b&gt;This text will be bold&lt;/b&gt;</p>
+        <p> Please see &lt;a href=&quot;{{webLink}}&quot;&gt;this link&lt;/a&gt; for testing.
+        </p>
+        <br>
+
+        <h1>Date and Time Formatting</h1>
+        <p> Variables representing dates and times can be formatted by appending special formatting codes as shown in
+            these
+            examples.</p>
+        <p> {{ endDate.strftime('%A, %B %-d, %Y') }} = Tuesday, September 8, 2020</p>
+        <p> {{ endDate.strftime('%-m/%-d/%y') }} = 9/8/20</p>
+        <p> {{ endDate.strftime('%a %b %-d') }} = Tue Sep 8</p>
+        <p> {{ startTime.strftime('%-I:%M %p') }}= 9:30 AM</p>
+        <p> Refer to this <a href="https://www.programiz.com/python-programming/datetime/strftime">Python time format
+                guide</a> for more examples.</p>
+        <br>
+
+        <h1>Advanced Template Controls</h1>
+        <p> In addition to these variables, templates can use Jinja templating controls to achieve the desired outcome.
+            Refer to the <a href='https://jinja.palletsprojects.com/en/2.11.x/templates/'>Jinja documentation for
+                details.</a>
+        </p>
+        <p> This example uses a for loop to iterate over class information:</p>
+        <p>{% for event in eventList %}</p>
+        <p>{{ event.eventName }}: {{ event.eventDate.strftime('%A, %B %-d, %Y') }} -
+            {{ event.startTime.strftime('%-I:%M %p') }} - {{ event.endTime.strftime('%-I:%M %p') }}</p>
+        <p>{% endfor %}</p>
+        <p>{% endraw %}</p>
+    </div>
+</div>
+
+<div class="infoTab" id="testTemplate" style="display:none">
+    <form class="w3-container w3-padding-large" method="POST" action="{{ url_for('templateManager.displayTemplates') }}"
+        enctype="multipart/form-data">
+        {{ testTemplateForm.csrf_token(id = False) }}
+        <div class="w3-container">
+            <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+                <legend class="w3-xlarge"> Test Template </legend>
+
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(testTemplateForm.emailSubject, "w3-half") }}
+                    {% if rendered_emailSubject %}
+                    <div class="w3-half">
+                        <label class="w3-text-green w3-large">Example of Rendered Email Subject:</label>
+                        <p class="w3-padding-small w3-white">{{rendered_emailSubject}}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(testTemplateForm.templateContent, "w3-half") }}
+                    {% if rendered_templateContent != 'None' %}
+                    <div class="w3-half">
+                        <label class="w3-text-green w3-large">Example of Rendered Content:</label>
+                        <p class="w3-padding-small w3-white">{{rendered_templateContent}}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="w3-row w3-padding-large">
+                    {{ testTemplateForm.submitTestTemplate(class="w3-btn w3-blue w3-large") }}
+                </div>
+
+                {% raw %}
+                <div class="w3-cell-row">
+                    <div class="w3-panel w3-cell w3-dark-grey">
+                        Test your template using any of these pre-defined variables:
+                        <p> {{ firstName }} = Smarty</p>
+                        <p> {{ lastName }} = Tester</p>
+                        <p> {{ orgName }} = Acme, Inc.</p>
+                        <p> {{ startDate }} = Monday, January 11, 2021</p>
+                        <p> {{ endDate }} = Tuesday, January 12, 2021</p>
+                        <p> {{ startTime }} = 11:00:00</p>
+                        <p> {{ endTime }} = 12:00:00</p>
+                        <p> {{ eventNumber }} = 42</p>
+                        <p> {{ webLink }} = http://google.com/</p>
+                        <p> {{ comment }} = random comment for testing</p>
+                        <p> {{ simpleList }} = ['Smarty Tester', 'Testy Tester', 'Betty Tester']</p>
+                    </div>
+                    <div class="w3-panel w3-cell w3-dark-grey">
+                        <p> {{ eventList }} = list of three entries for template testing. Each entry
+                            contains data
+                            for the
+                            following items: </p>
+                        <p> {{ eventName }} </p>
+                        <p> {{ eventDate }} </p>
+                        <p> {{ startTime }} </p>
+                        <p> {{ endTime }}</p>
+                        <p> The best way to access this list is by using a for loop as in this example:</p>
+                        <p>{% for event in eventList %}</p>
+                        <p>{{ event.eventName }}: {{ event.eventDate.strftime('%A, %B %-d, %Y') }} -
+                            {{ event.startTime.strftime('%-I:%M %p') }} - {{ event.endTime.strftime('%-I:%M %p') }}</p>
+                        <p>{% endfor %}</p>
+                    </div>
+                </div>
+                {% endraw %}
+
+            </fieldset>
+        </div>
+    </form>
+</div>
+
+
+<script type="text/javascript" src="{{ url_for('static', filename="js/appSettings.js") }}"></script>
+<!-- Reload page to last loaded tab -->
+<script type='text/javascript'>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        const pageName = 'TemplateManager';
+        const default_tab = 'editTemplate';
+        loadSavedTabOrDefaultTab(pageName, default_tab)
+    });
+</script>
+
+{% endblock content %}

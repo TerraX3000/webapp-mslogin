@@ -1,0 +1,26 @@
+1,Sample,Sample Template,"### Example of Markdown and Template Variables
+
+**First Name:** {{ firstName }} **Last Name:** {{ lastName }}
+
+**Org Name:** {{ orgName }}
+
+**Start Date:** {{ startDate.strftime('%A, %B %-d, %Y') }}
+
+**End Date:** {{ endDate.strftime('%A, %B %-d, %Y') }}
+
+**Start Time:** {{ startTime.strftime('%-I:%M %p') }}
+
+**End Time:** {{ endTime.strftime('%-I:%M %p') }}
+
+**Event Number:** {{ eventNumber }}
+
+**Comment:** {{ comment }}
+
+**Simple List:** {{ simpleList }}
+
+**Event Info**: {% for event in eventList %}
+
+**Event:** {{ event.eventName }}: {{ event.eventDate.strftime('%A, %B %-d, %Y') }} - {{ event.startTime.strftime('%-I:%M %p') }} - {{ event.endTime.strftime('%-I:%M %p') }}
+
+{% endfor %}
+Please see [Google]({{webLink}} ""Link to Google"") to test including links."

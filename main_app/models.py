@@ -67,3 +67,11 @@ class adminSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     enableOpsMode = db.Column(db.Boolean, nullable=False, default=False)
     timestamp = db.Column(db.TIMESTAMP, nullable=False, default=datetime.now())
+
+
+class Templates(db.Model):
+    __tablename__ = "templates"
+    id = db.Column(db.Integer, primary_key=True)
+    templateTitle = db.Column(db.String(255), nullable=True)
+    emailSubject = db.Column(db.String(255), nullable=True)
+    templateContent = db.Column(db.Text, nullable=True)
